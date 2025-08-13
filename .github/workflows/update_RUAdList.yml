@@ -23,3 +23,4 @@ jobs:
           git add "ruadlist+easylist.txt"
           git commit -m "Update filter ($DATE_UTC, ${FILE_SIZE} bytes)" || echo "No changes"
           git push
+          git pull --rebase
