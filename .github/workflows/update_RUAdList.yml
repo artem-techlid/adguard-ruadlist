@@ -10,12 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Download filter
         run: curl -L -o "ruadlist+easylist.txt" "https://easylist-downloads.adblockplus.org/ruadlist+easylist.txt"
+
       - name: Commit changes
         run: |
+          FILE_SIZE=$(stat -c%s "ruadlist+easylist.txt")
+          DATE_UTC=$(date -u +"%Y-%m-%d %H:%M UTC")
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add "ruadlist+easylist.txt"
-          git commit -m "Update filter" || echo "No changes"
+          git commit -m "Update filter ($DATE_UTC, ${FILE_SIZE} bytes)" || echo "No changes"
           git push
