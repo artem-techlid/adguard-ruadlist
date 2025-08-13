@@ -28,7 +28,7 @@ jobs:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           FILE_SIZE=$(stat -c%s "ruadlist+easylist.txt")
-          DATE_UTC=$(date -u +"%Y-%m-%d %H:%M UTC")
+          DATE_MSK=$(TZ='Europe/Moscow' date +"%Y-%m-%d %H:%M MSK")
           git add "ruadlist+easylist.txt"
-          git commit -m "Update RU AdList+EasyList ($DATE_UTC, ${FILE_SIZE} bytes)" || echo "No changes"
+          git commit -m "Update RU AdList+EasyList ($DATE_MSK, ${FILE_SIZE} bytes)" || echo "No changes"
           git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} HEAD:main
