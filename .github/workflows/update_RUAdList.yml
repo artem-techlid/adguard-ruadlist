@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Полная история для pull --rebase
 
       - name: Download RU AdList+EasyList
         run: |
@@ -21,6 +23,7 @@ jobs:
           DATE_UTC=$(date -u +"%Y-%m-%d %H:%M UTC")
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+          git pull --rebase
           git add "ruadlist+easylist.txt"
           git commit -m "Update RU AdList+EasyList ($DATE_UTC, ${FILE_SIZE} bytes)" || echo "No changes"
           git push
