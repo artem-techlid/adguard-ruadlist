@@ -3,7 +3,7 @@ name: Update RU AdList+EasyList
 on:
   schedule:
     - cron: "0 3 * * *"  # Запуск каждый день в 03:00 UTC
-  workflow_dispatch:      # Возможность запустить вручную
+  workflow_dispatch:
 
 jobs:
   update:
@@ -11,19 +11,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Полная история для pull --rebase
+          fetch-depth: 0  # Полная история для rebase
+
+      - name: Pull latest changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git pull --rebase
 
       - name: Download RU AdList+EasyList
         run: |
           curl -L -o "ruadlist+easylist.txt" "https://easylist-downloads.adblockplus.org/ruadlist+easylist.txt"
 
       - name: Commit changes
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           FILE_SIZE=$(stat -c%s "ruadlist+easylist.txt")
           DATE_UTC=$(date -u +"%Y-%m-%d %H:%M UTC")
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git pull --rebase
           git add "ruadlist+easylist.txt"
           git commit -m "Update RU AdList+EasyList ($DATE_UTC, ${FILE_SIZE} bytes)" || echo "No changes"
-          git push
+          git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} HEAD:main
